@@ -1,20 +1,38 @@
 package com.mycompany.autocompute;
 
+import android.app.DatePickerDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnClickListener {
 
-    EditText custname;
-    EditText custaddress;
-    String passtype;
-    String passduration;
+    private EditText custname;
+    private EditText custaddress;
+    private EditText fromDateEtxt;
+    private TextView toDateEtxt;
+    private String passtype;
+    private String passduration;
+
+    private DatePickerDialog fromDatePickerDialog;
+    private SimpleDateFormat dateFormatter;
+
+    Calendar newDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +43,73 @@ public class MainActivity extends ActionBarActivity {
         custaddress = (EditText)findViewById(R.id.e_custaddress);
         passtype = ((Spinner)findViewById(R.id.s_passtype)).getSelectedItem().toString();
         passduration = ((Spinner)findViewById(R.id.s_passduration)).getSelectedItem().toString();
+
+        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
+        findViewsById();
+
+        setDateTimeField();
+
+
     }
 
+    private void findViewsById() {
+        fromDateEtxt = (EditText) findViewById(R.id.e_fromdate);
+        fromDateEtxt.setInputType(InputType.TYPE_NULL);
+        fromDateEtxt.requestFocus();
+
+        toDateEtxt = (TextView) findViewById(R.id.t_todatedisp);
+        toDateEtxt.setInputType(InputType.TYPE_NULL);
+    }
+
+    private void setDateTimeField() {
+        fromDateEtxt.setOnClickListener(this);
+
+        Calendar newCalendar = Calendar.getInstance();
+        fromDatePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                fromDateEtxt.setText(dateFormatter.format(newDate.getTime()));
+
+                toDateSet();
+            }
+
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        /*public void onDateSet(DatePicker this, int year, int month, int day) {
+            // Do something with the date chosen by the user
+
+            Toast.makeText(getApplicationContext(), (String)"I am here",
+                    Toast.LENGTH_LONG).show();*/
+        /*}*/
+    }
+
+    private void toDateSet(){
+
+        Calendar newCalendar1/* = Calendar.getInstance()*/;
+        newCalendar1 = newDate;
+        newCalendar1.add(Calendar.DAY_OF_MONTH, 12);
+        /*toDateEtxt = fromDateEtxt + 1;*/
+        /*toDateEtxt.setText(dateFormatter.format(newCalendar1.getTime()));*/
+        toDateEtxt.setText(dateFormatter.format(newCalendar1.getTime()));
+
+    }
+/*    DatePickerDialog.OnDateSetListener fromDatePickerDialog = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            Toast.makeText(
+                    MainActivity.this,
+                    String.valueOf(year) + "-" + String.valueOf(monthOfYear)
+                            + "-" + String.valueOf(dayOfMonth),
+                    Toast.LENGTH_LONG).show();
+
+            Toast.makeText(getApplicationContext(), (String)"I am here",
+                    Toast.LENGTH_LONG).show();
+        }
+    };*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -48,5 +131,12 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view == fromDateEtxt) {
+            fromDatePickerDialog.show();
+        }
     }
 }
