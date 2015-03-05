@@ -88,9 +88,19 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private void toDateSet(){
 
-        Calendar newCalendar1/* = Calendar.getInstance()*/;
-        newCalendar1 = newDate;
-        newCalendar1.add(Calendar.DAY_OF_MONTH, 12);
+        Calendar newCalendar1 = Calendar.getInstance();
+        /*newCalendar1 = newDate;*//**/
+        /*newCalendar1.setTime(newDate);*/
+        /*newCalendar1.add(Calendar.DAY_OF_MONTH, 12);*/
+        int add_days = 30;
+
+        switch (passduration){
+            case "Daily"   :    add_days = 0;
+                                break;
+            case "Monthly" :    add_days = newCalendar1.getActualMaximum(Calendar.DAY_OF_MONTH);
+                                break;
+        }
+        newCalendar1.add(Calendar.DAY_OF_MONTH, add_days);
         /*toDateEtxt = fromDateEtxt + 1;*/
         /*toDateEtxt.setText(dateFormatter.format(newCalendar1.getTime()));*/
         toDateEtxt.setText(dateFormatter.format(newCalendar1.getTime()));
