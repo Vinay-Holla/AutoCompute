@@ -7,6 +7,8 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -28,11 +30,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private TextView toDateEtxt;
     private String passtype;
     private String passduration;
+    private String[] ar_passduration;
 
     private DatePickerDialog fromDatePickerDialog;
     private SimpleDateFormat dateFormatter;
 
     Calendar newDate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,30 +46,52 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         custname = (EditText)findViewById(R.id.e_custname);
         custaddress = (EditText)findViewById(R.id.e_custaddress);
         passtype = ((Spinner)findViewById(R.id.s_passtype)).getSelectedItem().toString();
+
+        Spinner s_passduration = (Spinner) findViewById(R.id.s_passduration);
+        ar_passduration = getResources().getStringArray(R.array.a_passduration);
         passduration = ((Spinner)findViewById(R.id.s_passduration)).getSelectedItem().toString();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, ar_passduration);
+
+        s_passduration.setAdapter(adapter);
+        s_passduration.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                int index = arg0.getSelectedItemPosition();
+
+                fromDateEtxt.setText("");
+                toDateEtxt.setText("");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
-        findViewsById();
-
-        setDateTimeField();
-
-
-    }
-
-    private void findViewsById() {
         fromDateEtxt = (EditText) findViewById(R.id.e_fromdate);
         fromDateEtxt.setInputType(InputType.TYPE_NULL);
         fromDateEtxt.requestFocus();
 
         toDateEtxt = (TextView) findViewById(R.id.t_todatedisp);
         toDateEtxt.setInputType(InputType.TYPE_NULL);
+
+        fromDateEtxt.setOnClickListener(this);
+        setDateTimeField();
+
     }
 
+
     private void setDateTimeField() {
-        fromDateEtxt.setOnClickListener(this);
+
+        /*fromDateEtxt.setInputType(InputType.TYPE_NULL);
+        toDateEtxt.setInputType(InputType.TYPE_NULL);*/
 
         Calendar newCalendar = Calendar.getInstance();
+
         fromDatePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -78,6 +104,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
+
+
         /*public void onDateSet(DatePicker this, int year, int month, int day) {
             // Do something with the date chosen by the user
 
@@ -88,11 +116,15 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private void toDateSet(){
 
-        Calendar newCalendar1 = Calendar.getInstance();
+        Calendar newCalendar1 = (Calendar)newDate.clone();
+        passduration = ((Spinner)findViewById(R.id.s_passduration)).getSelectedItem().toString();
         /*newCalendar1 = newDate;*//**/
         /*newCalendar1.setTime(newDate);*/
         /*newCalendar1.add(Calendar.DAY_OF_MONTH, 12);*/
-        int add_days = 30;
+        int add_days =0;
+
+        Toast.makeText(getApplicationContext(), (String)passduration,
+                Toast.LENGTH_LONG).show();
 
         switch (passduration){
             case "Daily"   :    add_days = 0;
@@ -147,6 +179,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     public void onClick(View view) {
         if(view == fromDateEtxt) {
             fromDatePickerDialog.show();
+
+
+
+            /*setDateTimeField();*/
         }
     }
 }
