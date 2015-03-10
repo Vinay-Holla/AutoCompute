@@ -10,7 +10,7 @@
     <string name="passduration">Duration</string>
     <string name="fromdate">From Date</string>
     <string name="todate">To Date</string>
-
+    <string name="amount">Amount</string>
 
 
     <string-array name="a_passtype">

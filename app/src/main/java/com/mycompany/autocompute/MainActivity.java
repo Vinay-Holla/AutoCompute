@@ -1,25 +1,27 @@
 package com.mycompany.autocompute;
 
 import android.app.DatePickerDialog;
-import android.support.v7.app.ActionBarActivity;
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
+import android.database.sqlite.SQLiteDatabase;
 
 
 public class MainActivity extends ActionBarActivity implements OnClickListener {
@@ -28,14 +30,17 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private EditText custaddress;
     private EditText fromDateEtxt;
     private TextView toDateEtxt;
+    private TextView amount;
     private String passtype;
     private String passduration;
     private String[] ar_passduration;
+    private int dbamount;
 
     private DatePickerDialog fromDatePickerDialog;
     private SimpleDateFormat dateFormatter;
 
     Calendar newDate;
+    SQLiteDatabase db;
 
 
     @Override
@@ -63,6 +68,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
                 fromDateEtxt.setText("");
                 toDateEtxt.setText("");
+                amount.setText("");
+                setAmountField();
             }
 
             @Override
@@ -79,8 +86,30 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         toDateEtxt = (TextView) findViewById(R.id.t_todatedisp);
         toDateEtxt.setInputType(InputType.TYPE_NULL);
 
+        amount = (TextView) findViewById(R.id.t_amountdisp);
+        amount.setInputType(InputType.TYPE_NULL);
+
         fromDateEtxt.setOnClickListener(this);
+
+        // Creating database and table
+
+        Toast.makeText(getApplicationContext(), (String)"Before DB",
+                Toast.LENGTH_LONG).show();
+
+        db=openOrCreateDatabase("passamtDB", Context.MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS passamt(passtype VARCHAR,passduration VARCHAR,amount int);");
+        db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Black Board','Daily',60);");
+        db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Black Board','Monthly',850);");
+        db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Red Board','Daily',80);");
+        db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Red Board','Monthly',1050);");
+        db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Vajra','Daily',150);");
+        db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Vajra','Monthly',2250);");
+
+        Toast.makeText(getApplicationContext(), (String)"After DB",
+                Toast.LENGTH_LONG).show();
+
         setDateTimeField();
+        setAmountField();
 
     }
 
@@ -100,6 +129,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 fromDateEtxt.setText(dateFormatter.format(newDate.getTime()));
 
                 toDateSet();
+
             }
 
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
@@ -138,20 +168,30 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         toDateEtxt.setText(dateFormatter.format(newCalendar1.getTime()));
 
     }
-/*    DatePickerDialog.OnDateSetListener fromDatePickerDialog = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            Toast.makeText(
-                    MainActivity.this,
-                    String.valueOf(year) + "-" + String.valueOf(monthOfYear)
-                            + "-" + String.valueOf(dayOfMonth),
+
+    private void setAmountField() {
+
+        passtype = ((Spinner)findViewById(R.id.s_passtype)).getSelectedItem().toString();
+        passduration = ((Spinner)findViewById(R.id.s_passduration)).getSelectedItem().toString();
+
+        Cursor c=db.rawQuery("SELECT amount FROM passamt WHERE passtype='"+passtype+"' AND passduration='"+passduration+"'",null);
+        if(c.moveToFirst())
+        {
+            // Displaying record if found
+
+            /*amount.setText(c.getString(1));*/
+            amount.setText(String.valueOf(c.getInt(0)));
+
+        }
+        else
+        {
+            /*showMessage("Error", "Invalid Rollno");*/
+
+            Toast.makeText(getApplicationContext(), (String)"No Records in DB",
                     Toast.LENGTH_LONG).show();
 
-            Toast.makeText(getApplicationContext(), (String)"I am here",
-                    Toast.LENGTH_LONG).show();
         }
-    };*/
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,11 +217,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if(view == fromDateEtxt) {
+        if (view == fromDateEtxt) {
             fromDatePickerDialog.show();
-
-
-
             /*setDateTimeField();*/
         }
     }
