@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private String passtype;
     private String passduration;
     private String[] ar_passduration;
+    private String[] ar_passtype;
     private int dbamount;
 
     private DatePickerDialog fromDatePickerDialog;
@@ -50,7 +51,30 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         custname = (EditText)findViewById(R.id.e_custname);
         custaddress = (EditText)findViewById(R.id.e_custaddress);
+
+        Spinner s_passtype = (Spinner) findViewById(R.id.s_passtype);
+        ar_passtype = getResources().getStringArray(R.array.a_passtype);
         passtype = ((Spinner)findViewById(R.id.s_passtype)).getSelectedItem().toString();
+
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, ar_passtype);
+
+        s_passtype.setAdapter(adapter1);
+        s_passtype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                int index = arg0.getSelectedItemPosition();
+
+                amount.setText("");
+                setAmountField();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
 
         Spinner s_passduration = (Spinner) findViewById(R.id.s_passduration);
         ar_passduration = getResources().getStringArray(R.array.a_passduration);
