@@ -2,7 +2,9 @@ package com.mycompany.autocompute;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
@@ -12,8 +14,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +39,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private String passduration;
     private String[] ar_passduration;
     private String[] ar_passtype;
-    private int dbamount;
+    private Button pay_button;
+    ImageView imgFavorite;
 
     private DatePickerDialog fromDatePickerDialog;
     private SimpleDateFormat dateFormatter;
@@ -115,10 +120,37 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         fromDateEtxt.setOnClickListener(this);
 
+        imgFavorite = (ImageView)findViewById(R.id.imageView1);
+        imgFavorite.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                open();
+            }
+        });
+
+        pay_button = (Button)findViewById(R.id.b_pass);
+
+        pay_button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v1) {
+                Intent intent = new Intent(MainActivity.this, PassView.class);
+                Bundle extras = new Bundle();
+                extras.putString("e_name",custname.getText().toString());
+                extras.putString("e_address",custaddress.getText().toString());
+                extras.putString("e_passtype",passtype);
+                extras.putString("e_passduration",passduration);
+                extras.putString("e_fromdate",fromDateEtxt.getText().toString());
+                extras.putString("e_todate",toDateEtxt.getText().toString());
+                extras.putString("e_amount",amount.getText().toString());
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
+
         // Creating database and table
 
-        Toast.makeText(getApplicationContext(), (String)"Before DB",
-                Toast.LENGTH_LONG).show();
+        /*Toast.makeText(getApplicationContext(), (String)"Before DB",
+                Toast.LENGTH_LONG).show();*/
 
         db=openOrCreateDatabase("passamtDB", Context.MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS passamt(passtype VARCHAR,passduration VARCHAR,amount int);");
@@ -129,14 +161,26 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Vajra','Daily',150);");
         db.execSQL("INSERT INTO passamt (passtype, passduration, amount) VALUES ('Vajra','Monthly',2250);");
 
-        Toast.makeText(getApplicationContext(), (String)"After DB",
-                Toast.LENGTH_LONG).show();
+        /*Toast.makeText(getApplicationContext(), (String)"After DB",
+                Toast.LENGTH_LONG).show();*/
 
         setDateTimeField();
         setAmountField();
 
     }
 
+    public void open(){
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bp = (Bitmap) data.getExtras().get("data");
+        imgFavorite.setImageBitmap(bp);
+    }
 
     private void setDateTimeField() {
 
