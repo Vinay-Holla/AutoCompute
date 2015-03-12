@@ -16,12 +16,13 @@
             android:textSize="15dp"
             android:text="@string/nameheader"/>
 
-        <EditText
-            android:id="@+id/e_custname"
+        <TextView
+            android:id="@+id/t_namedisp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:layout_weight="0.75" />
+            android:layout_weight="0.25"
+            android:textSize="15dp"/>
+
 
     </LinearLayout>
     <LinearLayout
@@ -37,12 +38,12 @@
             android:textSize="15dp"
             android:text="@string/addressheader"/>
 
-        <EditText
-            android:id="@+id/e_custaddress"
+        <TextView
+            android:id="@+id/t_addressdisp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:layout_weight="0.75" />
+            android:layout_weight="0.25"
+            android:textSize="15dp"/>
 
     </LinearLayout>
     <LinearLayout
@@ -58,14 +59,12 @@
             android:textSize="15dp"
             android:text="@string/passtype"/>
 
-        <Spinner
-            android:id="@+id/s_passtype"
+        <TextView
+            android:id="@+id/t_passtypedisp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
-            android:textSize="15dp"
-            android:entries="@array/a_passtype">
-        </Spinner>
+            android:layout_weight="0.25"
+            android:textSize="15dp"/>
 
     </LinearLayout>
     <LinearLayout
@@ -79,16 +78,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
             android:textSize="15dp"
-            android:text="@string/passduration"/>
+            android:text="@string/passduration1"/>
 
-        <Spinner
-            android:id="@+id/s_passduration"
+        <TextView
+            android:id="@+id/t_passdurdisp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
-            android:textSize="15dp"
-            android:entries="@array/a_passduration">
-        </Spinner>
+            android:layout_weight="0.25"
+            android:textSize="15dp"/>
 
     </LinearLayout>
 
@@ -105,12 +102,12 @@
             android:textSize="15dp"
             android:text="@string/fromdate"/>
 
-        <EditText
-            android:id="@+id/e_fromdate"
+        <TextView
+            android:id="@+id/t_fromdatedisp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:layout_weight="0.75" />
+            android:layout_weight="0.25"
+            android:textSize="15dp"/>
 
     </LinearLayout>
 
@@ -160,7 +157,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -175,20 +172,7 @@
             android:src="@drawable/ic_launcher" />
 
     </LinearLayout>
+-->
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/b_pass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="15dp"
-            android:text="@string/pass_text"/>
-
-    </LinearLayout>
 
 </LinearLayout>

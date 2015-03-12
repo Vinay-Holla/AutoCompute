@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.view.Menu;
@@ -22,8 +26,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -41,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private String[] ar_passtype;
     private Button pay_button;
     ImageView imgFavorite;
+    Bitmap bp;
 
     private DatePickerDialog fromDatePickerDialog;
     private SimpleDateFormat dateFormatter;
@@ -133,6 +141,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         pay_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v1) {
+                imgFavorite.buildDrawingCache();
+                Bitmap image= imgFavorite.getDrawingCache();
                 Intent intent = new Intent(MainActivity.this, PassView.class);
                 Bundle extras = new Bundle();
                 extras.putString("e_name",custname.getText().toString());
@@ -142,7 +152,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 extras.putString("e_fromdate",fromDateEtxt.getText().toString());
                 extras.putString("e_todate",toDateEtxt.getText().toString());
                 extras.putString("e_amount",amount.getText().toString());
+                /*extras.putParcelable("e_image", image);*/
                 intent.putExtras(extras);
+        /*        intent.putExtra("e_image",bp);*/
                 startActivity(intent);
             }
         });
@@ -174,13 +186,23 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         startActivityForResult(intent, 0);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bp = (Bitmap) data.getExtras().get("data");
+        bp = (Bitmap) data.getExtras().get("data");
         imgFavorite.setImageBitmap(bp);
+        /*imgFavorite.setImageBitmap(decodeFile(selectedImagePath));*/
+
+        /*String pathToImage = mImageCaptureUri.getPath();
+
+        Toast.makeText(getApplicationContext(), (String)pathToImage,
+                Toast.LENGTH_LONG).show();*/
+
+
     }
+
 
     private void setDateTimeField() {
 
